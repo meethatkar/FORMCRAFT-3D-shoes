@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { memo, useState, useCallback } from 'react';
 import { Shuffle, RotateCcw, Share2, CheckCheck } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { PresetThemes } from './PresetThemes';
 import { OrderSummaryCard } from './OrderSummaryCard';
 
-export function ConfiguratorControls({
+export const ConfiguratorControls = memo(function ConfiguratorControls({
   customization,
   onReset,
   onRandomize,
   onApplyPreset,
-  activePresetId
+  activePresetId,
 }) {
-  const [copied, setCopied] = React.useState(false);
+  const [copied, setCopied] = useState(false);
 
-  const handleShare = () => {
+  const handleShare = useCallback(() => {
     const configString = JSON.stringify(customization, null, 2);
     navigator.clipboard?.writeText(configString);
     setCopied(true);
@@ -24,13 +24,13 @@ export function ConfiguratorControls({
       particleCount: 60,
       spread: 70,
       origin: { y: 0.8 },
-      colors: ['#FF5A1F', '#171717', '#F5F4F0', '#10B981']
+      colors: ['#FF5A1F', '#171717', '#F5F4F0', '#10B981'],
     });
-  };
+  }, [customization]);
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Designer Presets Component */}
+      {/* Memoized Designer Presets Component */}
       <PresetThemes
         activePresetId={activePresetId}
         onApplyPreset={onApplyPreset}
@@ -77,4 +77,4 @@ export function ConfiguratorControls({
       <OrderSummaryCard />
     </div>
   );
-}
+});

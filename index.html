@@ -6,14 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FORMCRAFT 3D — Interactive 3D Product Customization Experience</title>
     <meta name="description" content="A premium 3D shoe configurator crafted with React, Three.js, React Three Fiber, and GSAP. Real-time material manipulation and high-fidelity studio rendering." />
-    <!-- Fonts -->
+
+    <!-- DNS Prefetch & Preconnect for External Assets -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+
+    <!-- Fonts with display=swap for Zero Blocking Render -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Production Model Prefetch: Loads 3D assets in background for instantaneous customizer switch -->
+    <link rel="prefetch" href="/shoe.glb" as="fetch" type="model/gltf-binary" crossorigin="anonymous">
+    <link rel="prefetch" href="/draco/draco_decoder.wasm" as="fetch" type="application/wasm" crossorigin="anonymous">
   </head>
   <body class="bg-[#F5F4F0] text-[#171717] antialiased selection:bg-[#FF5A1F] selection:text-white overflow-x-hidden">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-

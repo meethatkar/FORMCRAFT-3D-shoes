@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Check } from 'lucide-react';
 
-export function ColorSwatches({ currentRegion, currentColor, onUpdateColor }) {
+export const ColorSwatches = memo(function ColorSwatches({
+  currentRegion,
+  currentColor,
+  onUpdateColor,
+}) {
   return (
     <div className="mt-4 pt-3 border-t border-[#F0EFE9]">
       <span className="block text-[11px] font-mono uppercase tracking-widest text-[#71717A] mb-3">
@@ -49,5 +53,4 @@ export function ColorSwatches({ currentRegion, currentColor, onUpdateColor }) {
       </div>
     </div>
   );
-}
-
+});

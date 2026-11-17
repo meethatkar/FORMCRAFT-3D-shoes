@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { PRESET_THEMES } from '../../data/colors';
 
-export function PresetThemes({ activePresetId, onApplyPreset }) {
+export const PresetThemes = memo(function PresetThemes({ activePresetId, onApplyPreset }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
@@ -52,5 +52,4 @@ export function PresetThemes({ activePresetId, onApplyPreset }) {
       </div>
     </div>
   );
-}
-
+});

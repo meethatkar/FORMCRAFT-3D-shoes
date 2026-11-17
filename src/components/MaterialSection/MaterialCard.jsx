@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-export function MaterialCard({ feature, isReversed }) {
+export const MaterialCard = memo(function MaterialCard({ feature, isReversed }) {
   return (
     <div
       className={`craft-card grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center p-6 sm:p-10 rounded-3xl bg-white border border-[#E6E4DC] shadow-soft ${
@@ -18,6 +18,7 @@ export function MaterialCard({ feature, isReversed }) {
           alt={feature.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           loading="lazy"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
 
@@ -63,5 +64,4 @@ export function MaterialCard({ feature, isReversed }) {
       </div>
     </div>
   );
-}
-
+});

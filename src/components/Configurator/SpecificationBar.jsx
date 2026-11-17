@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 
-export function SpecificationBar({ customization }) {
-  const parts = [
-    { label: 'Upper', color: customization.mesh },
-    { label: 'Sole', color: customization.sole },
-    { label: 'Laces', color: customization.laces },
-    { label: 'Heel', color: customization.heel },
-    { label: 'Logo', color: customization.stripes },
-  ];
+export const SpecificationBar = memo(function SpecificationBar({ customization }) {
+  const parts = useMemo(
+    () => [
+      { label: 'Upper', color: customization.mesh },
+      { label: 'Sole', color: customization.sole },
+      { label: 'Laces', color: customization.laces },
+      { label: 'Heel', color: customization.heel },
+      { label: 'Logo', color: customization.stripes },
+    ],
+    [
+      customization.mesh,
+      customization.sole,
+      customization.laces,
+      customization.heel,
+      customization.stripes,
+    ]
+  );
 
   return (
     <div className="p-3.5 sm:p-4 bg-white rounded-2xl border border-[#E6E4DC] shadow-xs flex flex-wrap items-center justify-between gap-3">
@@ -25,7 +34,7 @@ export function SpecificationBar({ customization }) {
           <div key={part.label} className="flex items-center gap-1.5 shrink-0">
             <span className="text-[#71717A] text-[11px]">{part.label}:</span>
             <span
-              className="w-2.5 h-2.5 rounded-full border border-black/20"
+              className="w-2.5 h-2.5 rounded-full border border-black/20 transition-colors duration-200"
               style={{ backgroundColor: part.color }}
             />
           </div>
@@ -33,5 +42,4 @@ export function SpecificationBar({ customization }) {
       </div>
     </div>
   );
-}
-
+});

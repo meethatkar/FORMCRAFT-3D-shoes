@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { COLOR_REGIONS } from '../../data/colors';
 import { RegionTabs } from './RegionTabs';
 import { ColorSwatches } from './ColorSwatches';
 
-export function ColorSelector({
+export const ColorSelector = memo(function ColorSelector({
   activeRegionId,
   onSelectRegion,
   customization,
-  onUpdateColor
+  onUpdateColor,
 }) {
   const currentRegion =
     COLOR_REGIONS.find((r) => r.id === activeRegionId) || COLOR_REGIONS[0];
@@ -18,7 +18,7 @@ export function ColorSelector({
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Component Tabs */}
+      {/* Memoized Component Tabs */}
       <RegionTabs
         activeRegionId={activeRegionId}
         onSelectRegion={onSelectRegion}
@@ -52,7 +52,7 @@ export function ColorSelector({
           </div>
         </div>
 
-        {/* Color Swatches Grid Component */}
+        {/* Memoized Color Swatches Grid Component */}
         <ColorSwatches
           currentRegion={currentRegion}
           currentColor={currentColor}
@@ -61,4 +61,4 @@ export function ColorSelector({
       </div>
     </div>
   );
-}
+});

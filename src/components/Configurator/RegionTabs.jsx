@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { COLOR_REGIONS } from '../../data/colors';
 
-export function RegionTabs({ activeRegionId, onSelectRegion, customization }) {
+export const RegionTabs = memo(function RegionTabs({
+  activeRegionId,
+  onSelectRegion,
+  customization,
+}) {
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
@@ -29,7 +33,7 @@ export function RegionTabs({ activeRegionId, onSelectRegion, customization }) {
             >
               {/* Micro Color indicator dot */}
               <span
-                className="w-3 h-3 rounded-full border border-black/15 shadow-2xs shrink-0"
+                className="w-3 h-3 rounded-full border border-black/15 shadow-2xs shrink-0 transition-colors duration-200"
                 style={{ backgroundColor: regionColor }}
               />
               <span>{region.shortName}</span>
@@ -39,5 +43,4 @@ export function RegionTabs({ activeRegionId, onSelectRegion, customization }) {
       </div>
     </div>
   );
-}
-
+});

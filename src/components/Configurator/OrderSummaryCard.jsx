@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-export function OrderSummaryCard() {
+export const OrderSummaryCard = memo(function OrderSummaryCard() {
   const handleOrder = () => {
     confetti({
       particleCount: 100,
       spread: 80,
       origin: { y: 0.6 },
-      colors: ['#FF5A1F', '#FFFFFF', '#10B981']
+      colors: ['#FF5A1F', '#FFFFFF', '#10B981'],
     });
     alert('Customized pair specifications locked in! Your custom FORMCRAFT 3D build sheet is ready.');
   };
@@ -44,5 +44,4 @@ export function OrderSummaryCard() {
       </p>
     </div>
   );
-}
-
+});

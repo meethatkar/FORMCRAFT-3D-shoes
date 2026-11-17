@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Sparkles } from 'lucide-react';
 import { HeroFloatingBadge } from './HeroFloatingBadge';
 
-export function HeroVisual({ visualRef }) {
+export const HeroVisual = memo(function HeroVisual({ visualRef }) {
   return (
     <div className="relative flex items-center justify-center w-full">
       <div
@@ -12,11 +12,13 @@ export function HeroVisual({ visualRef }) {
         {/* Ambient Background Circle */}
         <div className="absolute w-64 h-64 sm:w-72 sm:h-72 rounded-full bg-[#FF5A1F]/10 blur-2xl pointer-events-none" />
 
-        {/* Product Visual - Responsive containment */}
+        {/* Product Visual with High Priority */}
         <div className="relative z-10 w-full h-full flex items-center justify-center p-2 sm:p-4">
           <img
             src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85"
             alt="FORMCRAFT 3D Signature Shoe"
+            fetchpriority="high"
+            decoding="async"
             className="w-full h-auto max-h-[85%] object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-105 group-hover:-rotate-3"
           />
         </div>
@@ -39,5 +41,4 @@ export function HeroVisual({ visualRef }) {
       </div>
     </div>
   );
-}
-
+});

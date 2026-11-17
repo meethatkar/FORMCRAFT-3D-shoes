@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { ConfiguratorHeader } from './ConfiguratorHeader';
 import { ShoeCanvas } from './ShoeCanvas';
 import { SpecificationBar } from './SpecificationBar';
@@ -7,14 +7,14 @@ import { ConfiguratorControls } from './ConfiguratorControls';
 import { COLOR_REGIONS, INITIAL_CUSTOMIZATION } from '../../data/colors';
 import { Sliders } from 'lucide-react';
 
-export function Configurator({ onRef }) {
+export function Configurator() {
   const [customization, setCustomization] = useState(INITIAL_CUSTOMIZATION);
   const [activeRegionId, setActiveRegionId] = useState('mesh');
   const [autoRotate, setAutoRotate] = useState(false);
   const [activePresetId, setActivePresetId] = useState('craft-orange');
   const canvasRef = useRef();
 
-  const handleUpdateColor = (regionId, hex) => {
+  const handleUpdateColor = useCallback((regionId, hex) => {
     setCustomization((prev) => {
       const next = { ...prev, [regionId]: hex };
       if (regionId === 'laces' && !prev._customCaps) {
@@ -23,17 +23,17 @@ export function Configurator({ onRef }) {
       return next;
     });
     setActivePresetId('custom');
-  };
+  }, []);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setCustomization(INITIAL_CUSTOMIZATION);
     setActivePresetId('craft-orange');
     if (canvasRef.current?.resetCamera) {
       canvasRef.current.resetCamera();
     }
-  };
+  }, []);
 
-  const handleRandomize = () => {
+  const handleRandomize = useCallback(() => {
     const randomColors = {};
     COLOR_REGIONS.forEach((region) => {
       const randomIndex = Math.floor(Math.random() * region.colors.length);
@@ -43,16 +43,20 @@ export function Configurator({ onRef }) {
     randomColors.inner = randomColors.heel;
     setCustomization(randomColors);
     setActivePresetId('custom');
-  };
+  }, []);
 
-  const handleApplyPreset = (preset) => {
+  const handleApplyPreset = useCallback((preset) => {
     setCustomization(preset.colors);
     setActivePresetId(preset.id);
-  };
+  }, []);
 
-  const handleSelectRegion = (regionId) => {
+  const handleSelectRegion = useCallback((regionId) => {
     setActiveRegionId(regionId);
-  };
+  }, []);
+
+  const handleToggleAutoRotate = useCallback(() => {
+    setAutoRotate((prev) => !prev);
+  }, []);
 
   return (
     <section
@@ -64,7 +68,7 @@ export function Configurator({ onRef }) {
 
       {/* Main Dual-Pane Responsive Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-        {/* Left Column: Interactive 3D Canvas (7-8 cols on desktop) */}
+        {/* Left Column: Interactive 3D Canvas */}
         <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-4 w-full">
           <ShoeCanvas
             ref={canvasRef}
@@ -72,14 +76,14 @@ export function Configurator({ onRef }) {
             activeRegion={activeRegionId}
             onSelectRegion={handleSelectRegion}
             autoRotate={autoRotate}
-            onToggleAutoRotate={() => setAutoRotate(!autoRotate)}
+            onToggleAutoRotate={handleToggleAutoRotate}
           />
 
-          {/* Modular Specification Bar Component */}
+          {/* Memoized Specification Bar */}
           <SpecificationBar customization={customization} />
         </div>
 
-        {/* Right Column: HTML Customization Panel (4-5 cols on desktop) */}
+        {/* Right Column: HTML Customization Panel */}
         <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6 w-full">
           <div className="p-4 sm:p-6 bg-[#FAF9F5] rounded-3xl border border-[#E6E4DC] shadow-soft flex flex-col gap-6">
             <div className="flex items-center justify-between pb-3 border-b border-[#E6E4DC]">
@@ -94,7 +98,7 @@ export function Configurator({ onRef }) {
               </span>
             </div>
 
-            {/* Modular Color Swatch & Category Selector Component */}
+            {/* Memoized Color Swatch & Category Selector Component */}
             <ColorSelector
               activeRegionId={activeRegionId}
               onSelectRegion={handleSelectRegion}
@@ -102,7 +106,7 @@ export function Configurator({ onRef }) {
               onUpdateColor={handleUpdateColor}
             />
 
-            {/* Modular Controls, Presets & Checkout Component */}
+            {/* Memoized Controls, Presets & Checkout Component */}
             <ConfiguratorControls
               customization={customization}
               onReset={handleReset}

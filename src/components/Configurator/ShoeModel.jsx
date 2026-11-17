@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, memo } from 'react';
 import { useGLTF, Center } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -6,18 +6,18 @@ import * as THREE from 'three';
 // Configure DRACO decoder path to local public/draco folder
 useGLTF.setDecoderPath('/draco/');
 
-export function ShoeModel({
+export const ShoeModel = memo(function ShoeModel({
   customization,
   activeRegion,
   onSelectRegion,
   autoRotate = false,
-  scale = 1.2
+  scale = 1.2,
 }) {
   const groupRef = useRef();
   const { nodes, materials } = useGLTF('/shoe.glb');
   const [hoveredPart, setHoveredPart] = useState(null);
 
-  // Synchronize Three.js materials with customization state
+  // Synchronize Three.js materials with customization state directly on material references
   useEffect(() => {
     if (!materials) return;
 
@@ -230,6 +230,17 @@ export function ShoeModel({
       </group>
     </Center>
   );
-}
+});
 
-useGLTF.preload('/shoe.glb');
+// Non-blocking preloading via requestIdleCallback
+if (typeof window !== 'undefined') {
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => {
+      useGLTF.preload('/shoe.glb');
+    });
+  } else {
+    setTimeout(() => {
+      useGLTF.preload('/shoe.glb');
+    }, 800);
+  }
+}

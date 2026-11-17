@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 
-export function ProductCard({ product, onSelectVariation }) {
+export const ProductCard = memo(function ProductCard({ product, onSelectVariation }) {
   return (
     <div className="gallery-card group flex flex-col justify-between p-6 rounded-3xl bg-white border border-[#E6E4DC] hover:border-[#171717] transition-all duration-300 shadow-soft hover:shadow-float">
       <div>
@@ -12,6 +12,7 @@ export function ProductCard({ product, onSelectVariation }) {
             alt={product.name}
             className="w-full h-full object-cover rounded-xl transition-transform duration-700 group-hover:scale-108"
             loading="lazy"
+            decoding="async"
           />
 
           {/* Edition & Price Pill */}
@@ -65,5 +66,4 @@ export function ProductCard({ product, onSelectVariation }) {
       </a>
     </div>
   );
-}
-
+});

@@ -26,7 +26,7 @@ function AdaptiveCamera() {
   useEffect(() => {
     const aspect = size.width / Math.max(size.height, 1);
     if (aspect < 0.85) {
-      // Very narrow portrait mobile
+      // Narrow mobile portrait
       camera.position.set(0, 0.25, 3.8);
       camera.fov = 48;
     } else if (aspect < 1.2) {
@@ -41,6 +41,15 @@ function AdaptiveCamera() {
     camera.updateProjectionMatrix();
   }, [size.width, size.height, camera]);
 
+  return null;
+}
+
+// Invalidate frame on color change to support on-demand rendering
+function FrameInvalidator({ customization }) {
+  const { invalidate } = useThree();
+  useEffect(() => {
+    invalidate();
+  }, [customization, invalidate]);
   return null;
 }
 
@@ -64,7 +73,7 @@ export const ShoeCanvas = forwardRef(function ShoeCanvas(
     },
     setCameraView: (view) => {
       handleSetView(view);
-    }
+    },
   }));
 
   const handleReset = () => {
@@ -102,7 +111,7 @@ export const ShoeCanvas = forwardRef(function ShoeCanvas(
 
   return (
     <div
-      className="relative w-full h-[380px] sm:h-[460px] md:h-[520px] lg:h-[580px] xl:h-[620px] rounded-3xl overflow-hidden bg-gradient-to-b from-[#FAF9F5] via-[#F3F1EC] to-[#EBE7DF] border border-[#E6E3DA] select-none shadow-soft"
+      className="relative w-full h-[380px] sm:h-[460px] md:h-[520px] lg:h-[580px] xl:h-[620px] rounded-3xl overflow-hidden bg-gradient-to-b from-[#FAF9F5] via-[#F3F1EC] to-[#EBE7DF] border border-[#E6E4DC] select-none shadow-soft"
       style={{ touchAction: 'none' }}
     >
       {/* Decorative Canvas Grid Overlay */}
@@ -120,26 +129,34 @@ export const ShoeCanvas = forwardRef(function ShoeCanvas(
         activeView={activeView}
       />
 
-      {/* Three.js R3F WebGL Canvas */}
+      {/* Three.js R3F WebGL Canvas with Performance Optimizations */}
       <Canvas
         shadows
-        dpr={[1, 2]}
+        // Frameloop: automatically switches between always (during auto-rotation) and demand (when idle)
+        frameloop={autoRotate ? 'always' : 'demand'}
+        // Clamp DPR to max 2 to prevent GPU fillrate stalls on 3x Retina displays
+        dpr={[1, Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2)]}
         camera={{ position: [0, 0.32, 2.7], fov: 40 }}
         gl={{
           antialias: true,
           alpha: true,
           powerPreference: 'high-performance',
+          stencil: false,
+          depth: true,
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.15
+          toneMappingExposure: 1.15,
         }}
       >
         {/* Adaptive Viewport Camera adjustment */}
         <AdaptiveCamera />
 
+        {/* Invalidate WebGL render on color state changes */}
+        <FrameInvalidator customization={customization} />
+
         {/* Studio Lighting */}
         <ambientLight intensity={0.7} />
 
-        {/* Key Directional Light with Soft Shadows */}
+        {/* Key Directional Light */}
         <directionalLight
           position={[5, 8, 5]}
           intensity={1.4}
@@ -163,7 +180,7 @@ export const ShoeCanvas = forwardRef(function ShoeCanvas(
           color="#ffffff"
         />
 
-        {/* HDR Environment */}
+        {/* Studio Environment Reflections */}
         <Environment preset="city" />
 
         <Suspense fallback={<CanvasLoader />}>
@@ -175,7 +192,7 @@ export const ShoeCanvas = forwardRef(function ShoeCanvas(
             scale={1.2}
           />
 
-          {/* Photorealistic Contact Shadow */}
+          {/* Optimized Contact Shadow */}
           <ContactShadows
             position={[0, -0.62, 0]}
             opacity={0.65}
@@ -187,9 +204,10 @@ export const ShoeCanvas = forwardRef(function ShoeCanvas(
           />
         </Suspense>
 
-        {/* Orbit Controls */}
+        {/* Orbit Controls with Demand Invalidation */}
         <OrbitControls
           ref={controlsRef}
+          makeDefault
           enablePan={false}
           enableZoom={true}
           minDistance={1.6}
